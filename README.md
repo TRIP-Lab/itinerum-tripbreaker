@@ -8,7 +8,7 @@ The algorithm employs a naïve rule-based approach which first over-eagerly divi
 
 Two helper scripts (*run_tripbreaker_on_user.py* and *run_tripbreaker_on_survey.py*) are included to run the algorithm on a single-user or for all users in a survey. The scripts assume coordinates data is to be loaded from a PostGIS SQL table, however, this can be adapted to read directly from a .csv input file. The helper scripts also read a metro.csv file if exists, which requires simply an X (longitude) and Y (latitude) for each metro stop to include in trip detection. An example is included within the repository.
 
-The file *tripbreaker/algorithm.py* contains the tripbreaking functions (in processing order), which are called by the super function *run()* at the bottom. The tripbreaker results two objects: *trips* and *summaries*. The objects' keys are a Trip ID (not necessarily consecutive) that will be identical between both. The *trips* object values will include all the GPS coordinates labelled by trip, the *summaries* object values will include a single record indicating the start/end locations & times of each detected trip.
+The file *tripbreaker/algorithm.py* contains the tripbreaking functions (in processing order), which are called by the super function *run()* at the bottom. The tripbreaker results in two objects: *trips* and *summaries*. The objects' keys are a Trip ID (not necessarily consecutive) that will be identical between both. The *trips* object values will include all the GPS coordinates labelled by trip, the *summaries* object values will include a single record indicating the start/end locations & times of each detected trip.
 
 ### Configuration
 
