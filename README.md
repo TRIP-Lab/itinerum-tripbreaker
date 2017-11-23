@@ -1,8 +1,8 @@
 # itinerum-tripbreaker
 
-The repository contains a basic proof-of-concept algorithm for inferencing trips from Itinerum users' collected GPS coordinates. This code within is unsupported, provided as-is, and is intended as a jumping off point for building more robust trip detection methods.
+_The repository contains a basic proof-of-concept algorithm for inferencing trips from Itinerum users' collected GPS coordinates. This code within is unsupported, provided as-is, and is intended as a jumping off point for building more robust trip detection methods._
 
-The algorithm employs a naïve rule-based approach which first over-eagerly divides all points into segments and attempts to reconstruct full trips from these segments when various conditions are met.
+_The algorithm employs a naïve rule-based approach which first over-eagerly divides all points into segments and attempts to reconstruct full trips from these segments when various conditions are met._
 
 ### Getting Started
 
