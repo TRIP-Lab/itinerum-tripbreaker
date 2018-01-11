@@ -17,7 +17,7 @@ The repository is structured as:
 
 
 
-1. A PostgreSQL database with PostGIS enabled must be available to write tripbreaker results to.
+1. A PostgreSQL database with PostGIS enabled must be available to write tripbreaker results to. The database should be named "tripbreaking_" appended with your survey name.
 
 2. Load all Itinerum data in the `./data` directory. This directory should include the Itinerum platform's .csv exports and any available subway stations data.
 
