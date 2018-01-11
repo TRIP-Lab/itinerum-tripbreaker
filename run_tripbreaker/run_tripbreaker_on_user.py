@@ -21,7 +21,7 @@ warnings.simplefilter("ignore", category=sa_exc.SAWarning)
 ### config
 # Setup note: Before running script, make sure the output database
 # is accessible with the PostGIS extension enabled
-SURVEY_NAME = 'UT1'
+SURVEY_NAME = 'survey'
 DATASET_DATE = '2017-12-14'
 CONFIG = {
     'in_db_uri': 'sqlite:///../data/{s}-processing-{d}.sqlite'.format(s=SURVEY_NAME,

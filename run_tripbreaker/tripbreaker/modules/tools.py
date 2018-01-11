@@ -31,12 +31,15 @@ def process_utm(points):
     '''Convert WGS84 lat/lon points to UTM for performing spatial queries'''
     out_points = []
     for p in points:
-        p['latitude'], p['longitude'] = float(p['latitude']), float(p['longitude'])
-        p['easting'], p['northing'], _, _ = utm.from_latlon(p['latitude'], p['longitude'])
-        p['speed'] = float(p['speed'])
-        p['h_accuracy'] = float(p['h_accuracy'])
-        p['v_accuracy'] = float(p['v_accuracy'])
-        out_points.append(p)
+        try:
+            p['latitude'], p['longitude'] = float(p['latitude']), float(p['longitude'])
+            p['easting'], p['northing'], _, _ = utm.from_latlon(p['latitude'], p['longitude'])
+            p['speed'] = float(p['speed'])
+            p['h_accuracy'] = float(p['h_accuracy'])
+            p['v_accuracy'] = float(p['v_accuracy'])
+            out_points.append(p)
+        except utm.error.OutOfRangeError:
+            pass
     return out_points
 
 

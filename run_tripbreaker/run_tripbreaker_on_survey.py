@@ -21,11 +21,11 @@ warnings.simplefilter("ignore", category=sa_exc.SAWarning)
 ### config
 # Setup note: Before running script, make sure the output database
 # is accessible with the PostGIS extension enabled
-SURVEY_NAME = 'UT1'
+SURVEY_NAME = 'survey'
 DATASET_DATE = '2017-12-14'
 CONFIG = {
     'in_db_uri': 'sqlite:///../data/{s}-processing-{d}.sqlite'.format(s=SURVEY_NAME,
-                                                                         d=DATASET_DATE),
+                                                                      d=DATASET_DATE),
     'out_db_uri': 'postgresql://username:password@server/tripbreaking_{s}'.format(s=SURVEY_NAME),
     'tripbreaker_parameters': {
         'break_interval_seconds': 360,
@@ -44,7 +44,7 @@ out_db = dataset.connect(CONFIG['out_db_uri'])
 ### main
 # transforms the data from sqlite string-types to the declared
 # Python types, could also be used with a .csv reader
-def serialize_row_types(rows):
+def serialize_row_types(mobile_uuid, rows):
     types = {
         'id': int,
         'uuid': str,
@@ -66,7 +66,7 @@ def serialize_row_types(rows):
                     r[col] = 0.
             r[col] = cast_func(r[col])
         # add in the uuid to keep consistent with full survey tripbreaker
-        r['uuid'] = CONFIG['mobile_uuid']
+        r['uuid'] = mobile_uuid
         yield r
 
 
@@ -89,7 +89,7 @@ def create_trips_postgis_table():
 
 
 # iterate through the trips and generate database inserts with WKT strings for geography
-def write_trips_to_postgis(trips, summaries):
+def write_trips_to_postgis(mobile_uuid, trips, summaries):
     for trip_id, trip in trips.items():
         coordinate_pairs = []
         for point in trip:
@@ -105,7 +105,7 @@ def write_trips_to_postgis(trips, summaries):
             in_srid=CONFIG['input_srid'])
         properties = summaries[trip_id]
         trip_row = OrderedDict([
-            ('uuid', CONFIG['mobile_uuid']),
+            ('uuid', mobile_uuid),
             ('trip_id', properties['trip_id']),
             ('start_time', properties['start'].isoformat()),
             ('end_time', properties['end'].isoformat()),
@@ -143,7 +143,7 @@ def create_coordinates_postgis_table():
 
 
 # iterate through the coordinates and generate database inserts with WKT strings for geography
-def write_coordinates_to_postgis(coordinates):
+def write_coordinates_to_postgis(mobile_uuid, coordinates):
     for c in coordinates:
         coordinate_wkt = '\'POINT({lon} {lat})\''.format(lon=c['longitude'],
                                                          lat=c['latitude'])
@@ -152,7 +152,7 @@ def write_coordinates_to_postgis(coordinates):
             in_srid=CONFIG['input_srid'])
 
         coordinate_row = OrderedDict([
-            ('uuid', CONFIG['mobile_uuid']),
+            ('uuid', mobile_uuid),
             ('latitude', c['latitude']),
             ('longitude', c['longitude']),
             ('h_accuracy', c['h_accuracy']),
@@ -210,7 +210,7 @@ def create_trip_points_postgis_table():
 
 # iterate through the processed trip points and generate
 # database inserts with WKT strings for geography
-def write_trip_points_to_postgis(trip_points):
+def write_trip_points_to_postgis(mobile_uuid, trip_points):
     for p in trip_points:
         trip_point_wkt = '\'POINT({lon} {lat})\''.format(lon=p['longitude'],
                                                          lat=p['latitude'])
@@ -219,7 +219,7 @@ def write_trip_points_to_postgis(trip_points):
             in_srid=CONFIG['input_srid'])
 
         point_row = OrderedDict([
-            ('uuid', CONFIG['mobile_uuid']),
+            ('uuid', mobile_uuid),
             ('latitude', p['latitude']),
             ('longitude', p['longitude']),
             ('h_accuracy', p.get('h_accuracy')),
@@ -274,7 +274,7 @@ def create_prompt_points_postgis_table():
 
 # iterate through the processed prompt points and generate
 # database inserts with WKT strings for geography
-def write_prompt_points_to_postgis(prompt_points):
+def write_prompt_points_to_postgis(mobile_uuid, prompt_points):
     grouped_prompts = {}
     for p in prompt_points:
         timestamp = p['timestamp']
@@ -293,7 +293,7 @@ def write_prompt_points_to_postgis(prompt_points):
             in_srid=CONFIG['input_srid'])
 
         point_row = OrderedDict([
-            ('uuid', CONFIG['mobile_uuid']),
+            ('uuid', mobile_uuid),
             ('latitude', p['latitude']),
             ('longitude', p['longitude']),
             ('response_1', p['response']),
@@ -349,10 +349,10 @@ def run():
         # create the user's points by uuid query with cast to their Python types
         coordinates_rows = in_db['coordinates'].find(uuid=mobile_uuid,
                                                      order_by=mobile_uuid)
-        coordinates = list(serialize_row_types(coordinates_rows))
+        coordinates = list(serialize_row_types(mobile_uuid, coordinates_rows))
         prompt_rows = in_db['prompt_responses'].find(uuid=mobile_uuid,
                                                      order_by='timestamp ')
-        prompts = list(serialize_row_types(prompt_rows))
+        prompts = list(serialize_row_types(mobile_uuid, prompt_rows))
 
         # run tripbreaker algorithm on user coordinates
         trips, summaries = algorithm.run(CONFIG['tripbreaker_parameters'],
@@ -362,7 +362,7 @@ def run():
         # # write the user's trip line features to database
         print('Writing trips for {uuid} to database...'.format(uuid=mobile_uuid))
         if trips:
-            write_trips_to_postgis(trips, summaries)
+            write_trips_to_postgis(mobile_uuid, trips, summaries)
 
         # write the user's processed points from tripbreaker to database
         print('Writing trip points for {uuid} to database...'.format(uuid=mobile_uuid))
@@ -370,16 +370,16 @@ def run():
             trip_points = []
             for trip_id, points in trips.items():
                 trip_points.extend(points)
-            write_trip_points_to_postgis(trip_points)    
+            write_trip_points_to_postgis(mobile_uuid, trip_points)    
 
         # write the user's coordinates from input database to output PostGIS table
         print('Writing input coordinates for {uuid} to database...'.format(uuid=mobile_uuid))
-        write_coordinates_to_postgis(coordinates)    
+        write_coordinates_to_postgis(mobile_uuid, coordinates)
 
         # write the user's mode prompts point features to database
         print('Writing input mode prompts for {uuid} to database...'.format(uuid=mobile_uuid))
-        write_prompt_points_to_postgis(prompts)
+        write_prompt_points_to_postgis(mobile_uuid, prompts)
+
 
 if __name__ == '__main__':
     run()
-

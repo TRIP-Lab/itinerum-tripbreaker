@@ -81,7 +81,7 @@ def metro_stations_utm(metro_stations):
     '''Get UTM coordinates for metro stations supplied by database lat/lngs'''
     stations = []
     for station in metro_stations:
-        northing, easting, _, _ = utm.from_latlon(station['latitude'], station['latitude'])
+        northing, easting, _, _ = utm.from_latlon(station['latitude'], station['longitude'])
         stations.append((northing, easting))
     return stations
 
@@ -432,12 +432,6 @@ def summarize(rows):
             for mcode in segment['merge_codes']:
                 merge_codes.add(mcode)
 
-        # if num < 50:
-        #     print(start_pt['timestamp'])
-        #     print(end_pt['timestamp'])
-        #     print('')
-        #     print('')
-        #     print('')
         direct_distance = tools.pythagoras((start_pt['easting'], start_pt['northing']),
                                            (end_pt['easting'], end_pt['northing']))
 
@@ -479,14 +473,11 @@ def run(parameters, metro_stations, points):
 
     high_accuracy_points = filter_accuracy(points, cutoff=parameters['accuracy_cutoff_meters'])
     cleaned_points = filter_errorneous_distance(high_accuracy_points, check_speed=60)
-    # cleaned_points = high_accuracy_points
     segment_groups = break_by_timegap(cleaned_points, timegap=parameters['break_interval_seconds'])
-    # print(len(metro_stations))
     metro_linked_trips = find_metro_transfers(stations, segment_groups, buffer_m=parameters['subway_buffer_meters'])
     velocity_connected_trips = connect_by_velocity(metro_linked_trips)
     cleaned_trips = filter_single_points(velocity_connected_trips)
     missing_trips = infer_missing_trips(stations, cleaned_trips)
     rows = merge_trips(cleaned_trips, missing_trips, stations)
     trips, summaries = summarize(rows)
-    # import sys; sys.exit()
     return trips, summaries
