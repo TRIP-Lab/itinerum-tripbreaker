@@ -35,7 +35,7 @@ The repository is structured as:
 
 Optionally, subway stations data can be provided for trip detection which requires an X (longitude) and Y (latitude) for each metro stop. An example is included within the repository.
 
-The file *tripbreaker/algorithm.py* contains the tripbreaking functions (in processing order), which are called by the *run()* function at the bottom of the script. The tripbreaker results in two objects: *trips* and *summaries*. The objects' keys are a Trip ID (not necessarily consecutive) that will be identical between both. The *trips* object values will include all the GPS coordinates labelled by trip, the *summaries* object values will include a single record indicating the start/end locations & times of each detected trip.
+The file *tripbreaker/algorithm.py* contains the tripbreaking functions (in processing order), which are called by the *run()* function at the bottom of the script. The tripbreaker results in two objects: *trips* and *summaries*. The objects' keys are a Trip ID (not necessarily sorted) that will be identical between both. The *trips* object values will include all the GPS coordinates labelled by trip, the *summaries* object values will include a single record indicating the start/end locations & times of each detected trip.
 
 ### Configuration
 
