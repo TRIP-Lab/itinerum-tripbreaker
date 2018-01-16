@@ -6,7 +6,7 @@ from datetime import date
 import os
 
 
-SURVEY_NAME = 'UT1'
+SURVEY_NAME = 'demo'
 db = dataset.connect(
     'sqlite:///./data/{s}-processing-{date}.sqlite'.format(s=SURVEY_NAME,
                                                            date=date.today()))
