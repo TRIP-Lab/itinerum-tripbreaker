@@ -2,7 +2,7 @@
 
 _The repository contains a basic proof-of-concept algorithm for inferencing trips from Itinerum users' collected GPS coordinates. This code within is provided **as-is** and is intended as a jumping off point for building more robust trip detection methods._
 
-_The algorithm employs a naïve rule-based approach which first over-eagerly divides all points into segments and attempts to reconstruct full trips from these segments when various conditions are met._
+_The algorithm employs a rule-based approach which first divides all points into segments and attempts to reconstruct full trips from these segments when various conditions are met._
 
 ### Getting Started
 
