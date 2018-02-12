@@ -61,3 +61,6 @@ When helper scripts have been configured as desired, the tripbreaker may be run 
 ### Viewing Results
 
 A demo .qgs save file and Toronto base data is included to quickly view tripbreaker results. Subsets of the data can be individually queried and loaded on-demand using the DB Manager within QGIS. 
+
+### License
+itinerum-tripbreaker is licensed under the terms of the MIT License (see the file LICENSE).
