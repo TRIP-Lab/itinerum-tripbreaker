@@ -7,7 +7,7 @@ _The repository contains a basic proof-of-concept algorithm for inferencing trip
 
 _The algorithm employs a rule-based approach which first divides all points into segments and attempts to reconstruct full trips from these segments when various conditions are met._
 
-### Getting Started
+## Getting Started
 
 The repository is structured as:
 
@@ -40,7 +40,7 @@ Optionally, subway stations data can be provided for trip detection which requir
 
 The file *tripbreaker/algorithm.py* contains the tripbreaking functions (in processing order), which are called by the *run()* function at the bottom of the script. The tripbreaker results in two objects: *trips* and *summaries*. The objects' keys are a Trip ID (not necessarily sorted) that will be identical between both. The *trips* object values will include all the GPS coordinates labelled by trip, the *summaries* object values will include a single record indicating the start/end locations & times of each detected trip.
 
-### Configuration
+## Configuration
 
 The helper script *run_tripbreaker_on_user.py* contains the complete configuration object with the following parameters:
 
@@ -58,9 +58,9 @@ The helper script *run_tripbreaker_on_user.py* contains the complete configurati
 
 When helper scripts have been configured as desired, the tripbreaker may be run with `python run_tripbreaker_on_user.py`  or `python run_tripbreaker_on_survey.py`.
 
-### Viewing Results
+## Viewing Results
 
 A demo .qgs save file and Toronto base data is included to quickly view tripbreaker results. Subsets of the data can be individually queried and loaded on-demand using the DB Manager within QGIS. 
 
-### License
+## License
 itinerum-tripbreaker is licensed under the terms of the MIT License (see the file LICENSE).
