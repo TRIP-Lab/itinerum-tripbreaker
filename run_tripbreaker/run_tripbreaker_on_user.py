@@ -336,6 +336,11 @@ def run():
                 'longitude': float(row['longitude'])
             })
 
+    create_trips_postgis_table()
+    create_trip_points_postgis_table()
+    create_coordinates_postgis_table()
+    create_prompt_points_postgis_table()
+
     # create the user's points by uuid query with cast to their Python types
     coordinates_rows = in_db['coordinates'].find(uuid=CONFIG['mobile_uuid'],
                                                  order_by='timestamp')
@@ -349,27 +354,25 @@ def run():
                                      metro_stations,
                                      coordinates)
  
-    # # write the user's trip line features to database
+    # write the user's trip line features to database
     print('Writing trips for {uuid} to database...'.format(uuid=CONFIG['mobile_uuid']))
-    create_trips_postgis_table()
-    write_trips_to_postgis(trips, summaries)
+    if trips:
+        write_trips_to_postgis(trips, summaries)
 
     # write the user's processed points from tripbreaker to database
     print('Writing trip points for {uuid} to database...'.format(uuid=CONFIG['mobile_uuid']))
-    trip_points = []
-    for trip_id, points in trips.items():
-        trip_points.extend(points)
-    create_trip_points_postgis_table()
-    write_trip_points_to_postgis(trip_points)    
+    if trips:
+        trip_points = []
+        for trip_id, points in trips.items():
+            trip_points.extend(points)
+        write_trip_points_to_postgis(trip_points)    
 
     # write the user's coordinates from input database to output PostGIS table
     print('Writing input coordinates for {uuid} to database...'.format(uuid=CONFIG['mobile_uuid']))
-    create_coordinates_postgis_table()
     write_coordinates_to_postgis(coordinates)    
 
     # write the user's mode prompts point features to database
     print('Writing input mode prompts for {uuid} to database...'.format(uuid=CONFIG['mobile_uuid']))
-    create_prompt_points_postgis_table()
     write_prompt_points_to_postgis(prompts)
 
 if __name__ == '__main__':

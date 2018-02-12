@@ -29,7 +29,7 @@ table_map = {
     'survey_responses': '{s}-survey_responses_fixed.csv'.format(s=SURVEY_NAME)
 }
 for table_name, csv_fn in table_map.items():
-    csv_fp = os.path.join(DATA_DIR, csv_fn)
+    csv_fp = os.path.join('data', csv_fn)
     load_table_from_csv(table_name, csv_fp)
 
 # 2: create indexes for speeding up queries

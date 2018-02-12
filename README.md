@@ -1,6 +1,6 @@
 # itinerum-tripbreaker
 
-Python Version: **3.6+**
+Python Version: **3.5+**
 
 
 _The repository contains a basic proof-of-concept algorithm for inferencing trips from Itinerum users' collected GPS coordinates. This code within is intended as a jumping off point for building more robust trip detection methods._
